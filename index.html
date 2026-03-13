@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screlia Studio AI App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); }
+        .pulse-dot { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <header class="gradient-bg text-white py-8 shadow-xl">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h1 class="text-4xl font-bold flex items-center gap-3"> Screlia Studio AI App v2.0</h1>
+                        <p class="text-gray-200 mt-2">Gemini-Tabanlı Profesyonel Akıllı Uygulama</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="flex items-center gap-2">
+                            <span class="pulse-dot w-3 h-3 bg-green-400 rounded-full"></span>
+                            <span class="text-sm">Server Aktif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex gap-4 mb-8 flex-wrap">
+                <button onclick="switchTab('query')" class="tab-btn active px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition">💬 Sorgular</button>
+                <button onclick="switchTab('history')" class="tab-btn px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition">📜 Geçmiş</button>
+                <button onclick="switchTab('favorites')" class="tab-btn px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition">⭐ Favoriler</button>
+                <button onclick="switchTab('search')" class="tab-btn px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition">🔍 Ara</button>
+                <button onclick="switchTab('stats')" class="tab-btn px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition">📊 İstatistikler</button>
+            </div>
+
+            <div id="query-tab" class="tab-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="glass-effect rounded-2xl p-8 shadow-lg">
+                            <h2 class="text-2xl font-bold text-gray-800 mb-6">Gemini AI'ye Soru Sor</h2>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Sorunuz</label>
+                                    <textarea id="queryInput" placeholder="Detaylı bir soru yazınız..." class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition" rows="4"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kategori</label>
+                                    <select id="categorySelect" class="w-full px-4 py-2 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none">
+                                        <option value="general">Genel</option>
+                                        <option value="coding">Kodlama</option>
+                                        <option value="design">Tasarım</option>
+                                        <option value="business">İşletme</option>
+                                        <option value="other">Diğer</option>
+                                    </select>
+                                </div>
+                                <button onclick="submitQuery()" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition">✨ Gönder</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="glass-effect rounded-2xl p-6 shadow-lg card-hover">
+                            <h3 class="text-lg font-bold text-gray-800 mb-4">⚡ Hızlı İstatistikler</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-600">Toplam Sorgu</span>
+                                    <span id="totalQueries" class="font-bold text-blue-600">0</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-600">Bugün</span>
+                                    <span id="todayQueries" class="font-bold text-green-600">0</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-600">Favoriler</span>
+                                    <span id="totalFavorites" class="font-bold text-yellow-600">0</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button onclick="clearHistory()" class="w-full bg-red-100 text-red-700 py-2 rounded-lg font-semibold hover:bg-red-200">🗑️ Geçmişi Temizle</button>
+                        <button onclick="exportData()" class="w-full bg-green-100 text-green-700 py-2 rounded-lg font-semibold hover:bg-green-200">📥 Dışa Aktar</button>
+                    </div>
+                </div>
+                <div class="mt-8 glass-effect rounded-2xl p-8 shadow-lg">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Cevap</h3>
+                    <div id="responseArea" class="bg-gray-50 rounded-lg p-6 min-h-64 border-2 border-gray-200">
+                        <p class="text-gray-500 text-center py-20">Cevap burada gösterilecek...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="history-tab" class="tab-content hidden">
+                <div class="glass-effect rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6"> Sorgu Geçmişi</h2>
+                    <div id="historyList" class="space-y-4">
+                        <p class="text-gray-500 text-center py-10">Geçmiş burada gösterilecek...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="favorites-tab" class="tab-content hidden">
+                <div class="glass-effect rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Favori Sorgular</h2>
+                    <div id="favoritesList" class="space-y-4">
+                        <p class="text-gray-500 text-center py-10">Favori burada gösterilecek...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="search-tab" class="tab-content hidden">
+                <div class="glass-effect rounded-2xl p-8 shadow-lg">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Geçmişte Ara</h2>
+                    <div class="flex gap-4 mb-6">
+                        <input type="text" id="searchInput" placeholder="Arama yapınız..." class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 outline-none">
+                        <button onclick="performSearch()" class="px-8 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700">Ara</button>
+                    </div>
+                    <div id="searchResults" class="space-y-4">
+                        <p class="text-gray-500 text-center py-10">Sonuç burada gösterilecek...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stats-tab" class="tab-content hidden">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="glass-effect rounded-2xl p-6 shadow-lg card-hover">
+                        <div class="text-4xl font-bold text-blue-600 mb-2" id="stat1">0</div>
+                        <p class="text-gray-600 font-semibold">Toplam Sorgular</p>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-6 shadow-lg card-hover">
+                        <div class="text-4xl font-bold text-green-600 mb-2" id="stat2">0</div>
+                        <p class="text-gray-600 font-semibold">Token</p>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-6 shadow-lg card-hover">
+                        <div class="text-4xl font-bold text-purple-600 mb-2" id="stat3">0</div>
+                        <p class="text-gray-600 font-semibold">Favoriler</p>
+                    </div>
+                    <div class="glass-effect rounded-2xl p-6 shadow-lg card-hover">
+                        <div class="text-4xl font-bold text-yellow-600 mb-2" id="stat4">0</div>
+                        <p class="text-gray-600 font-semibold">Bugün</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="bg-gray-900 text-gray-400 text-center py-6 mt-12">
+            <p>🚀 Screlia Studio © 2026 | v2.0 Pro Edition with Tailwind CSS</p>
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+
+        function switchTab(tabName) {
+            document.querySelectorAll('[id$="-tab"]').forEach(tab => tab.classList.add('hidden'));
+            document.getElementById(tabName + '-tab').classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-gray-200', 'text-gray-800');
+            });
+            event.target.classList.remove('bg-gray-200', 'text-gray-800');
+            event.target.classList.add('bg-blue-600', 'text-white');
+            if (tabName === 'history') loadHistory();
+            if (tabName === 'favorites') loadFavorites();
+            if (tabName === 'stats') loadStatistics();
+        }
+
+        async function submitQuery() {
+            const query = document.getElementById('queryInput').value;
+            const category = document.getElementById('categorySelect').value;
+            if (!query.trim()) { alert('Lütfen bir soru yazın'); return; }
+
+            const responseArea = document.getElementById('responseArea');
+            const submitBtn = event.target;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Gönderiliyor...';
+
+            try {
+                const response = await fetch(`${API_URL}/api/query`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, category })
+                });
+                const data = await response.json();
+                responseArea.innerHTML = `<div class="space-y-4"><div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded"><p class="text-sm text-gray-600">❓ Soru:</p><p class="text-gray-800 font-semibold">${escapeHtml(data.query)}</p></div><div class="bg-green-50 border-l-4 border-green-600 p-4 rounded"><p class="text-sm text-gray-600">✅ Cevap:</p><p class="text-gray-800">${escapeHtml(data.result)}</p></div><div class="flex gap-4 text-sm text-gray-600 pt-4 border-t"><span>📂 ${data.category}</span><span>⏱️ ${data.response_time.toFixed(2)}s</span></div></div>`;
+                document.getElementById('queryInput').value = '';
+                loadStatistics();
+            } catch (error) {
+                responseArea.innerHTML = `<div class="bg-red-50 border-l-4 border-red-600 p-4 rounded"><p class="text-red-700">❌ Hata: ${error.message}</p></div>`;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = ' Gönder';
+            }
+        }
+
+        async function loadHistory() {
+            try {
+                const response = await fetch(`${API_URL}/api/history?limit=50`);
+                const data = await response.json();
+                const historyList = document.getElementById('historyList');
+                if (!data.history || data.history.length === 0) {
+                    historyList.innerHTML = '<p class="text-gray-500 text-center py-10">Geçmiş boş</p>';
+                    return;
+                }
+                historyList.innerHTML = data.history.map(item => `<div class="bg-gray-50 p-4 rounded-lg border-l-4 border-blue-500"><p class="text-sm text-gray-500">${new Date(item.timestamp).toLocaleString('tr-TR')}</p><p class="text-gray-800 font-semibold mt-2">Q: ${escapeHtml(item.query)}</p><p class="text-gray-600 text-sm mt-2">A: ${escapeHtml(item.response).substring(0, 100)}...</p></div>`).join('');
+            } catch (error) { console.error('History error:', error); }
+        }
+
+        async function loadFavorites() {
+            try {
+                const response = await fetch(`${API_URL}/api/favorites`);
+                const data = await response.json();
+                const favoritesList = document.getElementById('favoritesList');
+                if (!data.favorites || data.favorites.length === 0) {
+                    favoritesList.innerHTML = '<p class="text-gray-500 text-center py-10">Favori yok</p>';
+                    return;
+                }
+                favoritesList.innerHTML = data.favorites.map(item => `<div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500"><p class="text-gray-800 font-semibold">⭐ ${escapeHtml(item.query)}</p><button onclick="removeFavorite('${item.query.replace(/'/g, "\\'")}')" class="text-red-600 text-sm mt-2">🗑️ Sil</button></div>`).join('');
+            } catch (error) { console.error('Favorites error:', error); }
+        }
+
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value;
+            if (!query.trim()) return;
+            try {
+                const response = await fetch(`${API_URL}/api/search?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                const results = document.getElementById('searchResults');
+                if (!data.results || data.results.length === 0) {
+                    results.innerHTML = '<p class="text-gray-500 text-center py-10">Sonuç bulunamadı</p>';
+                    return;
+                }
+                results.innerHTML = data.results.map(item => `<div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500"><p class="text-gray-800 font-semibold">${escapeHtml(item.query)}</p><p class="text-gray-600 text-sm mt-2">${escapeHtml(item.response).substring(0, 150)}...</p></div>`).join('');
+            } catch (error) { console.error('Search error:', error); }
+        }
+
+        async function loadStatistics() {
+            try {
+                const response = await fetch(`${API_URL}/api/statistics`);
+                const stats = await response.json();
+                document.getElementById('stat1').textContent = stats.total_queries || 0;
+                document.getElementById('stat2').textContent = stats.total_tokens || 0;
+                document.getElementById('stat3').textContent = stats.total_favorites || 0;
+                document.getElementById('stat4').textContent = stats.today_queries || 0;
+                document.getElementById('totalQueries').textContent = stats.total_queries || 0;
+                document.getElementById('todayQueries').textContent = stats.today_queries || 0;
+                document.getElementById('totalFavorites').textContent = stats.total_favorites || 0;
+            } catch (error) { console.error('Stats error:', error); }
+        }
+
+        function clearHistory() { alert('Geçmiş temizleme özelliği yakında...'); }
+        function exportData() { alert('Dışa aktarma özelliği yakında...'); }
+        function removeFavorite(q) { fetch(`${API_URL}/api/favorites/${encodeURIComponent(q)}`, {method:'DELETE'}).then(() => loadFavorites()); }
+        function escapeHtml(t) { return t.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m])); }
+
+        window.addEventListener('load', () => { loadStatistics(); console.log(' Screlia Studio v2.0 Ready!'); });
+    </script>
+</body>
+</html>

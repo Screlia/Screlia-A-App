@@ -1,0 +1,20 @@
+{
+  "app_name": "Screlia Studio AI App",
+  "version": "1.0.0",
+  "description": "Gemini-based AI application for code visualization and browsing",
+  "author": "Screlia Studio",
+  "api_version": "v1",
+  "features": [
+    "Code visualization",
+    "Browser integration",
+    "Gemini AI integration",
+    "Localhost-based",
+    "HTML/Python stack"
+  ],
+  "created_date": "2026-03-13",
+  "services": {
+    "frontend": "HTML/CSS/JavaScript",
+    "backend": "Python Flask",
+    "ai_provider": "Google Gemini"
+  }
+}

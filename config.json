@@ -1,0 +1,36 @@
+{
+  "app": {
+    "name": "Screlia Studio AI App",
+    "version": "2.0.0",
+    "author": "Screlia Studio",
+    "description": "Gemini-based AI Application with PyQt5 & Web Interface"
+  },
+  "server": {
+    "host": "localhost",
+    "port": 5000,
+    "debug": false,
+    "timeout": 30
+  },
+  "database": {
+    "type": "sqlite",
+    "path": "screlia_app.db"
+  },
+  "api": {
+    "rate_limit": "100/hour",
+    "cache_enabled": true,
+    "cache_ttl": 300
+  },
+  "features": {
+    "history_tracking": true,
+    "dark_mode": true,
+    "export_support": true,
+    "search_enabled": true,
+    "api_documentation": true
+  },
+  "ui": {
+    "theme": "auto",
+    "font_size": 12,
+    "window_width": 1400,
+    "window_height": 800
+  }
+}

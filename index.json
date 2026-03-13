@@ -1,0 +1,30 @@
+{
+  "pages": [
+    {
+      "id": 1,
+      "title": "Home",
+      "path": "/",
+      "description": "Main application page"
+    },
+    {
+      "id": 2,
+      "title": "React Dashboard",
+      "path": "/react",
+      "description": "React-based dashboard"
+    }
+  ],
+  "services": [
+    {
+      "name": "metadata-service",
+      "endpoint": "/api/metadata"
+    },
+    {
+      "name": "index-service",
+      "endpoint": "/api/index"
+    },
+    {
+      "name": "query-service",
+      "endpoint": "/api/query"
+    }
+  ]
+}
